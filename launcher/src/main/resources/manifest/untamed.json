@@ -1,0 +1,41 @@
+{
+  "_comment": [
+    "The manifest this build of the launcher was released against. The launcher",
+    "fetches the same document from the distribution host and falls back to this",
+    "copy when it cannot, so an outage costs updates rather than startup.",
+    "The mod URL and its checksum below are placeholders until the distribution",
+    "host exists, so installing the mod fails until they are real. Nothing is",
+    "installed without matching the checksum recorded here."
+  ],
+  "schemaVersion": 1,
+  "channel": "stable",
+  "minimumLauncherVersion": "0.1.0",
+  "minecraft": {
+    "version": "26.2",
+    "javaMajorVersion": 25
+  },
+  "fabric": {
+    "loader": "0.19.5",
+    "api": "0.160.0+26.2"
+  },
+  "mod": {
+    "id": "untamed",
+    "displayName": "Untamed",
+    "version": "0.1.0",
+    "url": "https://downloads.untamed.invalid/mod/untamed-0.1.0.jar",
+    "sha256": "e9cda2abe2aa0a72300b65535117559d2d1a8211afe8ba9b819a93cc7c405737",
+    "fileName": "untamed-0.1.0.jar"
+  },
+  "dependencies": [
+    {
+      "id": "fabric-api",
+      "displayName": "Fabric API",
+      "version": "0.160.0+26.2",
+      "url": "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/0.160.0%2B26.2/fabric-api-0.160.0%2B26.2.jar",
+      "sha256": "5f3dff88e1661166e222213302b25ace6c36dc3683804cbd4b5acf93138ea05e",
+      "fileName": "fabric-api-0.160.0+26.2.jar"
+    }
+  ],
+  "resources": [],
+  "server": null
+}

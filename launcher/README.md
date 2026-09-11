@@ -1,10 +1,10 @@
-# Survival Overhaul launcher
+# Untamed launcher
 
-A dedicated desktop launcher for the Survival Overhaul mod. One button. It
+A dedicated desktop launcher for the Untamed mod. One button. It
 installs Minecraft, Fabric, the mod and its dependencies, keeps them current,
 and starts the game.
 
-> Survival Overhaul is an unofficial Minecraft mod and launcher and is not
+> Untamed is an unofficial Minecraft mod and launcher and is not
 > affiliated with or endorsed by Mojang Studios or Microsoft. Minecraft is a
 > trademark of Mojang Studios. You need your own copy of Minecraft: Java Edition
 > to play.
@@ -38,7 +38,7 @@ not an assumption.
 
 Two things about it are worth knowing before running it. The chain needs a
 client id from an Azure application registration, supplied at build time or in
-the `SURVIVAL_OVERHAUL_CLIENT_ID` environment variable; without one, sign-in is a
+the `UNTAMED_CLIENT_ID` environment variable; without one, sign-in is a
 button that says so rather than a failure halfway through. And the refresh token
 is kept in memory only, so the user signs in again each time the launcher opens.
 The alternatives are an OS credential store, which the Java standard library
@@ -85,9 +85,9 @@ move together, since the Compose compiler ships inside the Kotlin release.
 
 | | |
 | --- | --- |
-| Windows | `%APPDATA%\SurvivalOverhaul` |
-| macOS | `~/Library/Application Support/SurvivalOverhaul` |
-| Linux | `$XDG_DATA_HOME/survival-overhaul`, else `~/.local/share/survival-overhaul` |
+| Windows | `%APPDATA%\Untamed` |
+| macOS | `~/Library/Application Support/Untamed` |
+| Linux | `$XDG_DATA_HOME/untamed`, else `~/.local/share/untamed` |
 
 Settings live there as `settings.json`, logs in `logs/`, and the game is
 installed in `game/` unless the user chooses another directory. The game

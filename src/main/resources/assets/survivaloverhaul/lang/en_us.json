@@ -1,8 +1,0 @@
-{
-  "block.survivaloverhaul.torch": "Torch",
-  "block.survivaloverhaul.wall_torch": "Torch",
-  "block.survivaloverhaul.unlit_torch": "Unlit Torch",
-  "tooltip.survivaloverhaul.torch.relights": "Rain puts this out. It relights once the sky clears.",
-  "tooltip.survivaloverhaul.torch.manual_relight": "Rain puts this out. Relight it with flint and steel.",
-  "tooltip.survivaloverhaul.torch.unlit": "Light the stack on any flame, or place it and use flint and steel."
-}

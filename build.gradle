@@ -17,7 +17,7 @@ loom {
     splitEnvironmentSourceSets()
 
     mods {
-        "survivaloverhaul" {
+        "untamed" {
             sourceSet sourceSets.main
             sourceSet sourceSets.client
         }

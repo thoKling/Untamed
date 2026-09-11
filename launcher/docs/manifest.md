@@ -13,12 +13,12 @@ must not mean shipping a new launcher.*
   "minecraft": { "version": "26.2", "javaMajorVersion": 25 },
   "fabric":    { "loader": "0.19.5", "api": "0.160.0+26.2" },
   "mod": {
-    "id": "survival-overhaul",
-    "displayName": "Survival Overhaul",
+    "id": "untamed",
+    "displayName": "Untamed",
     "version": "0.1.0",
-    "url": "https://.../survivaloverhaul-0.1.0.jar",
+    "url": "https://.../untamed-0.1.0.jar",
     "sha256": "e9cda2ab...",
-    "fileName": "survivaloverhaul-0.1.0.jar"
+    "fileName": "untamed-0.1.0.jar"
   },
   "dependencies": [ { "id": "fabric-api", "...": "same shape as mod" } ],
   "resources":    [ { "kind": "resource_pack", "artifact": { "...": "" } } ],
@@ -26,7 +26,7 @@ must not mean shipping a new launcher.*
 }
 ```
 
-The copy bundled at `resources/manifest/survival-overhaul.json` is the one this
+The copy bundled at `resources/manifest/untamed.json` is the one this
 build was released against. The launcher fetches the same document over HTTPS
 from `Distribution.MANIFEST_URL` and falls back to the bundled copy when the host
 is unreachable, so a distribution outage degrades to "cannot update" rather than
@@ -109,7 +109,7 @@ downloads.
 
 ## Installation state, which is a different file
 
-`survival-overhaul.json` inside the installation directory records what was
+`untamed.json` inside the installation directory records what was
 installed. It is not trusted either. `FilesystemInstallationProbe` cross-checks
 every entry against a real file on disk, so a jar deleted by hand reports as
 missing rather than as present. The manifest says what should be there; the

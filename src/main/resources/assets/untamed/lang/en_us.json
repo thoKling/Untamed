@@ -1,0 +1,8 @@
+{
+  "block.untamed.torch": "Torch",
+  "block.untamed.wall_torch": "Torch",
+  "block.untamed.unlit_torch": "Unlit Torch",
+  "tooltip.untamed.torch.relights": "Rain puts this out. It relights once the sky clears.",
+  "tooltip.untamed.torch.manual_relight": "Rain puts this out. Relight it with flint and steel.",
+  "tooltip.untamed.torch.unlit": "Light the stack on any flame, or place it and use flint and steel."
+}

@@ -8,7 +8,7 @@ in the project brief; this file is about structure.
 Minecraft is an adapter around the survival logic, not the place the survival
 logic lives.
 
-Concretely: `dev.survivaloverhaul.domain` contains no `net.minecraft` import, and
+Concretely: `dev.untamed.domain` contains no `net.minecraft` import, and
 never will. Anything that needs to read or change the world does it through a
 port defined in `domain` and implemented in `integration`.
 
@@ -60,7 +60,7 @@ client-to-server packets are requests that the server validates before acting on
   delegates to `TorchSubstitution`.
 - Prefer a Fabric event where one exists. The only mixin in the mod exists
   because block placement has no suitable event.
-- Prefix injected methods with `survivaloverhaul$`.
+- Prefix injected methods with `untamed$`.
 - One mixin class per target class.
 
 ## Adding the next system

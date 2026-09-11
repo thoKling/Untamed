@@ -24,7 +24,7 @@ entitlement endpoint on every sign-in, not assumed and not configurable.
 
 ## What we distribute
 
-Our own code, our own name, our own icons and artwork, and the Survival Overhaul
+Our own code, our own name, our own icons and artwork, and the Untamed
 mod jar, which is this repository's work. Fabric Loader and Fabric API are not
 redistributed either; they are downloaded from Fabric's own maven with checksums
 verified.
@@ -47,12 +47,12 @@ supplies, and without one the launcher says so rather than appearing broken.
 The disclaimer is shown permanently in the window frame, on every screen, not
 buried in an About dialog:
 
-> Survival Overhaul is an unofficial Minecraft mod and launcher and is not
+> Untamed is an unofficial Minecraft mod and launcher and is not
 > affiliated with or endorsed by Mojang Studios or Microsoft. Minecraft is a
 > trademark of Mojang Studios. You need your own copy of Minecraft: Java Edition
 > to play.
 
-The product is named Survival Overhaul. It does not use "Minecraft" as part of
+The product is named Untamed. It does not use "Minecraft" as part of
 its own name, does not imitate the official launcher's appearance, and labels
 itself "Unofficial launcher" in the window title and on the home screen.
 

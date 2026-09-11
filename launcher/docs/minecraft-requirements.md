@@ -20,7 +20,7 @@ Microsoft sign-in, specified in [authentication.md](authentication.md).*
 | Java | major 25, component `java-runtime-epsilon` | the 26.2 version JSON's `javaVersion` block |
 | Fabric Loader | 0.19.5, marked stable for 26.2 | Fabric meta v2 loader list |
 | Fabric API | 0.160.0+26.2 | Fabric maven, which also publishes the `.sha256` |
-| Survival Overhaul | 0.1.0 | this repository's `gradle.properties` |
+| Untamed | 0.1.0 | this repository's `gradle.properties` |
 
 These live in the manifest, not in code. See [manifest.md](manifest.md).
 
@@ -110,12 +110,12 @@ still, and only behind the same checksum discipline as everything else.
   libraries/<maven path>           libraries, content-verified
   assets/indexes, assets/objects   content-addressed assets
   natives/                         extracted natives, per version
-  mods/                            Fabric API, Survival Overhaul
+  mods/                            Fabric API, Untamed
   config/  resourcepacks/  shaderpacks/
-  survival-overhaul.json           what this launcher installed
+  untamed.json           what this launcher installed
 ```
 
-`survival-overhaul.json` is the launcher's own record. It is a claim, not a
+`untamed.json` is the launcher's own record. It is a claim, not a
 truth: the installation probe cross-checks every entry against a real file
 before believing it, so deleting a jar by hand shows up as missing rather than
 as installed.
@@ -127,7 +127,7 @@ containing `${...}` placeholders that the launcher fills: classpath, natives
 directory, game directory, asset index, and the account values the sign-in
 produced.
 Memory, window size and extra JVM arguments come from settings. The launcher
-brand goes in as `survival-overhaul-launcher` so a crash report says where the
+brand goes in as `untamed-launcher` so a crash report says where the
 game was started from.
 
 No argument the launcher constructs may come from an unvalidated manifest field.

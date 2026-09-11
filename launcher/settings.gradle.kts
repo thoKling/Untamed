@@ -34,4 +34,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "survival-overhaul-launcher"
+rootProject.name = "untamed-launcher"

@@ -219,7 +219,7 @@ not a reason to make an exception.
 launcher/
   build.gradle.kts  settings.gradle.kts  gradle.properties
   docs/
-  src/main/kotlin/dev/survivaloverhaul/launcher/
+  src/main/kotlin/dev/untamed/launcher/
     Main.kt                composition root
     branding/              names, claims, notices
     domain/                versions, game, manifest, installation, settings,
@@ -231,7 +231,7 @@ launcher/
                            minecraft documents, installation, java, launch,
                            account
     ui/                    theme, components, home, settings, diagnostics
-  src/main/resources/manifest/survival-overhaul.json
+  src/main/resources/manifest/untamed.json
   src/test/kotlin/...
 ```
 

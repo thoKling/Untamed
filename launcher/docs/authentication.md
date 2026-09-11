@@ -30,7 +30,7 @@ written to it rather than waiting for it. The registration needs:
 
 The code is written to that registration rather than waiting for it. The client
 id is the one value a build has to supply, read from the
-`SURVIVAL_OVERHAUL_CLIENT_ID` environment variable or from a constant compiled
+`UNTAMED_CLIENT_ID` environment variable or from a constant compiled
 into the build. When it is absent, "not configured" is a state of its own with
 its own sentence, so the user is told that this build has no registration yet
 rather than watching a sign-in fail halfway along the chain.

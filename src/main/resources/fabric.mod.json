@@ -1,23 +1,23 @@
 {
   "schemaVersion": 1,
-  "id": "survivaloverhaul",
+  "id": "untamed",
   "version": "${version}",
-  "name": "Survival Overhaul",
-  "description": "A systemic survival overhaul. Weather, fire, temperature and equipment influence one another instead of sitting in separate bars.",
+  "name": "Untamed",
+  "description": "A systemic untamed. Weather, fire, temperature and equipment influence one another instead of sitting in separate bars.",
   "authors": [],
   "contact": {},
   "license": "MIT",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "dev.survivaloverhaul.SurvivalOverhaul"
+      "dev.untamed.Untamed"
     ],
     "client": [
-      "dev.survivaloverhaul.client.SurvivalOverhaulClient"
+      "dev.untamed.client.UntamedClient"
     ]
   },
   "mixins": [
-    "survivaloverhaul.mixins.json"
+    "untamed.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

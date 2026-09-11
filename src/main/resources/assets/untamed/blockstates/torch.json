@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "lit=true": { "model": "untamed:block/torch" },
+    "lit=false": { "model": "untamed:block/torch_unlit" }
+  }
+}

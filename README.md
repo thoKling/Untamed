@@ -1,12 +1,12 @@
-# Survival Overhaul
+# Untamed
 
-A systemic survival overhaul for Minecraft Java Edition, built on Fabric.
+A systemic untamed for Minecraft Java Edition, built on Fabric.
 
 The goal is not another row of bars on the HUD. Weather, fire, wetness,
 temperature, hydration and equipment are meant to feed one another, so that
 survival decisions come out of the interaction between systems rather than out
 of individual penalties. The full design lives in
-[Minecraft Survival Overhaul — Project Brief.md](Minecraft%20Survival%20Overhaul%20—%20Project%20Brief.md).
+[Minecraft Untamed — Project Brief.md](Minecraft%20Survival%20Overhaul%20—%20Project%20Brief.md).
 
 ## What is implemented
 
@@ -106,10 +106,10 @@ torch without touching the vanilla block. Note that a torch is placed by
 overrides `getPlacementState` without calling `super`, so both are hooked.
 
 **A torch is crafted unlit.** The mod overrides the vanilla torch recipe to yield
-`survivaloverhaul:unlit_torch`, so coal and a stick no longer buy light outright. To
+`untamed:unlit_torch`, so coal and a stick no longer buy light outright. To
 light one, either place it and use flint and steel on it, or hold the stack and
 click any open flame, which lights the whole stack at once. What counts as a
-flame is the block tag `survivaloverhaul:lights_torches`, so a data pack can add to it,
+flame is the block tag `untamed:lights_torches`, so a data pack can add to it,
 and a tagged block that has a `lit` property has to actually be burning. Breaking a torch returns it in the
 state it was in, an unlit torch for a dark one and an ordinary vanilla torch for a
 burning one, and pick-block follows the same rule. The unlit torch sits next to
@@ -118,7 +118,7 @@ the menu, because there it would only be a duplicate of the vanilla torch.
 
 ## Configuration
 
-Written to `config/survivaloverhaul.json` on first run.
+Written to `config/untamed.json` on first run.
 
 | Key | Default | Meaning |
 | --- | --- | --- |
@@ -184,7 +184,7 @@ veteran would expect: `ResourceLocation` is named `Identifier` here, in
 `net.minecraft.resources`.
 
 There is also no remap step. Minecraft 26.x runs under official mappings
-directly, so `build/libs/survivaloverhaul-<version>.jar` is the shippable artifact
+directly, so `build/libs/untamed-<version>.jar` is the shippable artifact
 and there is no separate remapped jar to look for.
 
 ## Surfaces to re-check on a Minecraft update
@@ -203,7 +203,7 @@ are all confined to `integration` and `client`, which is the point of the layout
 | `FireServices` | Fabric renamed `ServerWorldEvents` to `ServerLevelEvents`, and the chunk-load handler gained a third argument |
 | `StandingAndWallBlockItemMixin` | torches are placed by `StandingAndWallBlockItem`, whose `getPlacementState` override never calls `super`, so injecting on `BlockItem` alone misses them |
 | `IgnitionSources` | `BlockState.is(TagKey)` on its own was removed in 26.2, leaving only the overload that also takes a predicate |
-| `survivaloverhaul.mixins.json` | `compatibilityLevel` must match the compiled class version |
+| `untamed.mixins.json` | `compatibilityLevel` must match the compiled class version |
 
 Render layers are deliberately absent from that list. Since 26.x the layer is
 derived from the texture's own transparency, so the client registers nothing and

@@ -1,6 +1,0 @@
-{
-  "variants": {
-    "lit=true": { "model": "survivaloverhaul:block/torch" },
-    "lit=false": { "model": "survivaloverhaul:block/torch_unlit" }
-  }
-}
