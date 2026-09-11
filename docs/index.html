@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Untamed — a systemic survival overhaul for Minecraft</title>
+<meta name="description" content="A Fabric mod that rebuilds Minecraft survival as interacting systems: weather, fire, wetness, temperature and hydration feeding one another. Minecraft 26.2, Java 25.">
+<meta property="og:title" content="Untamed">
+<meta property="og:description" content="A systemic survival overhaul for Minecraft Java Edition. Rain puts your torches out, and that is only the first system.">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --bg: #0c0f14;
+    --bg-raised: #131820;
+    --bg-sunken: #090b0f;
+    --line: #222b38;
+    --line-soft: #1a212b;
+    --text: #d9e0ea;
+    --text-dim: #8b98a9;
+    --text-faint: #64707f;
+    --flame: #ff9c42;
+    --flame-soft: #ffb870;
+    --rain: #6fb3d9;
+    --ok: #6fc79a;
+    --measure: 68rem;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: ui-sans-serif, system-ui, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 16px/1.65 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { width: 100%; max-width: var(--measure); margin: 0 auto; padding: 0 1.5rem; }
+
+  a { color: var(--flame-soft); text-decoration-color: rgba(255,156,66,.35); text-underline-offset: 3px; }
+  a:hover { color: var(--flame); }
+
+  code, pre, .mono { font-family: var(--mono); }
+
+  code {
+    font-size: .88em;
+    background: var(--bg-sunken);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: .1em .38em;
+    color: var(--flame-soft);
+  }
+
+  pre {
+    background: var(--bg-sunken);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.1rem 1.25rem;
+    overflow-x: auto;
+    font-size: .82rem;
+    line-height: 1.6;
+    color: var(--text-dim);
+    margin: 0;
+  }
+
+  pre code { background: none; border: 0; padding: 0; color: inherit; font-size: inherit; }
+
+  h1, h2, h3 { line-height: 1.2; letter-spacing: -.015em; margin: 0; }
+
+  /* ---------- top bar ---------- */
+
+  .bar {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(12,15,20,.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .bar .wrap { display: flex; align-items: center; gap: 1.5rem; height: 56px; }
+  .brand {
+    font: 600 .95rem/1 var(--mono);
+    letter-spacing: .16em; text-transform: uppercase;
+    color: var(--text); text-decoration: none;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .brand .spark { width: 7px; height: 7px; border-radius: 50%; background: var(--flame); box-shadow: 0 0 10px 2px rgba(255,156,66,.6); }
+  .bar nav { margin-left: auto; display: flex; gap: 1.4rem; }
+  .bar nav a { color: var(--text-dim); text-decoration: none; font-size: .85rem; }
+  .bar nav a:hover { color: var(--text); }
+  @media (max-width: 640px) { .bar nav a.opt { display: none; } }
+
+  /* ---------- hero ---------- */
+
+  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line-soft); }
+  .hero::before {
+    content: ""; position: absolute; inset: -20% -10% 0;
+    background:
+      repeating-linear-gradient(76deg, transparent 0 13px, rgba(111,179,217,.075) 13px 14px),
+      radial-gradient(120% 80% at 50% -10%, rgba(255,156,66,.10), transparent 60%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 45%;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; z-index: 1; padding-top: 5.5rem; padding-bottom: 4.5rem; }
+  .eyebrow {
+    font: 500 .74rem/1 var(--mono);
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--rain); margin-bottom: 1.4rem;
+  }
+  h1 { font-size: clamp(2.8rem, 8vw, 4.6rem); font-weight: 700; }
+  h1 .glow { color: var(--flame); text-shadow: 0 0 34px rgba(255,156,66,.45); }
+  .lede { font-size: clamp(1.05rem, 2.2vw, 1.3rem); color: var(--text-dim); max-width: 44ch; margin: 1.5rem 0 0; }
+  .lede strong { color: var(--text); font-weight: 500; }
+
+  .badges { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 2.2rem; }
+  .badge {
+    font: 500 .76rem/1 var(--mono);
+    color: var(--text-dim);
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: .45rem .8rem;
+  }
+  .badge b { color: var(--text); font-weight: 600; }
+
+  .cta { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2.2rem; }
+  .btn {
+    display: inline-block; text-decoration: none;
+    font: 500 .9rem/1 var(--sans);
+    padding: .8rem 1.3rem; border-radius: 7px;
+    border: 1px solid var(--line);
+    color: var(--text); background: var(--bg-raised);
+    transition: border-color .15s, color .15s;
+  }
+  .btn:hover { border-color: var(--text-faint); color: var(--text); }
+  .btn.primary {
+    background: linear-gradient(180deg, #ffab5c, #f2802a);
+    border-color: #f2802a; color: #1a1005; font-weight: 600;
+  }
+  .btn.primary:hover { color: #1a1005; filter: brightness(1.08); }
+
+  /* ---------- sections ---------- */
+
+  section { padding: 4.5rem 0; border-bottom: 1px solid var(--line-soft); }
+  section:last-of-type { border-bottom: 0; }
+  .kicker {
+    font: 500 .74rem/1 var(--mono);
+    letter-spacing: .2em; text-transform: uppercase;
+    color: var(--text-faint); margin-bottom: .9rem;
+  }
+  h2 { font-size: clamp(1.6rem, 3.6vw, 2.1rem); font-weight: 650; }
+  h3 { font-size: 1.02rem; font-weight: 600; margin-bottom: .45rem; }
+  section > .wrap > p { color: var(--text-dim); max-width: 62ch; }
+  section > .wrap > h2 + p { margin-top: 1rem; }
+
+  /* ---------- system chain ---------- */
+
+  .chain { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem; margin: 2.2rem 0 0; padding: 0; list-style: none; }
+  .chain li {
+    font: 500 .82rem/1 var(--mono);
+    background: var(--bg-raised); border: 1px solid var(--line);
+    border-radius: 6px; padding: .5rem .75rem; color: var(--text-dim);
+  }
+  .chain li.live { color: var(--flame); border-color: rgba(255,156,66,.45); background: rgba(255,156,66,.07); }
+  .chain .arrow { color: var(--text-faint); font-size: .9rem; }
+  .chain-note { margin-top: 1.1rem; font-size: .87rem; color: var(--text-faint); }
+
+  /* ---------- cards ---------- */
+
+  .cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(248px, 1fr)); margin-top: 2.4rem; }
+  .card {
+    background: var(--bg-raised); border: 1px solid var(--line);
+    border-radius: 10px; padding: 1.35rem 1.4rem;
+  }
+  .card p { color: var(--text-dim); font-size: .92rem; margin: 0; }
+  .card .tag {
+    display: inline-block; font: 600 .68rem/1 var(--mono);
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--ok); margin-bottom: .8rem;
+  }
+  .card .tag.wip { color: var(--text-faint); }
+
+  /* ---------- tables ---------- */
+
+  .scroll { overflow-x: auto; margin-top: 2rem; border: 1px solid var(--line); border-radius: 10px; }
+  table { border-collapse: collapse; width: 100%; font-size: .9rem; min-width: 520px; }
+  th, td { text-align: left; padding: .72rem 1rem; border-bottom: 1px solid var(--line-soft); }
+  thead th {
+    font: 600 .72rem/1 var(--mono); letter-spacing: .13em; text-transform: uppercase;
+    color: var(--text-faint); background: var(--bg-sunken);
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.k { font-family: var(--mono); font-size: .84rem; color: var(--flame-soft); white-space: nowrap; }
+  td.v { font-family: var(--mono); font-size: .84rem; color: var(--rain); white-space: nowrap; }
+  td small { color: var(--text-dim); }
+
+  /* ---------- roadmap ---------- */
+
+  .road { list-style: none; margin: 2.4rem 0 0; padding: 0; border-left: 1px solid var(--line); }
+  .road li { position: relative; padding: 0 0 1.6rem 1.75rem; }
+  .road li:last-child { padding-bottom: 0; }
+  .road li::before {
+    content: ""; position: absolute; left: -5px; top: .45rem;
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--line);
+  }
+  .road li.done::before { background: var(--flame); border-color: var(--flame); box-shadow: 0 0 12px rgba(255,156,66,.55); }
+  .road .m { font: 600 .74rem/1 var(--mono); letter-spacing: .12em; color: var(--text-faint); }
+  .road li.done .m { color: var(--flame); }
+  .road .t { display: block; margin: .4rem 0 .2rem; font-weight: 600; }
+  .road .d { color: var(--text-dim); font-size: .89rem; }
+
+  /* ---------- footer ---------- */
+
+  footer { padding: 2.6rem 0 3.5rem; color: var(--text-faint); font-size: .85rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: baseline; }
+  footer .disclaimer { max-width: 48ch; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="spark"></span>Untamed</a>
+    <nav>
+      <a href="#idea">The idea</a>
+      <a href="#now" class="opt">Today</a>
+      <a href="#how" class="opt">How it works</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#build">Build</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow">Fabric &middot; Minecraft Java Edition</div>
+    <h1>Rain puts your<br><span class="glow">torches</span> out.</h1>
+    <p class="lede">
+      Untamed is a systemic survival overhaul. Weather, fire, wetness, temperature
+      and hydration are built to feed one another, so that survival decisions come out of
+      <strong>the interaction between systems</strong> rather than out of another row of bars on the HUD.
+    </p>
+    <div class="badges">
+      <span class="badge">Minecraft <b>26.2</b></span>
+      <span class="badge">Java <b>25</b></span>
+      <span class="badge">Fabric Loader <b>0.19.5</b></span>
+      <span class="badge">Mod <b>0.1.0</b></span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#now">See what works today</a>
+      <a class="btn" href="#how">How it is built</a>
+    </div>
+  </div>
+</div>
+
+<section id="idea">
+  <div class="wrap">
+    <div class="kicker">The idea</div>
+    <h2>One system is a penalty. Five are a situation.</h2>
+    <p>
+      A thirst bar on its own is bookkeeping. The goal here is a chain of consequences
+      where every link is a real mechanic, and where the player solves a problem by
+      understanding the loop rather than by watching a meter.
+    </p>
+
+    <ul class="chain">
+      <li class="live">Travel in rain</li><span class="arrow">&rarr;</span>
+      <li>Get wet</li><span class="arrow">&rarr;</span>
+      <li>Insulation drops</li><span class="arrow">&rarr;</span>
+      <li>Body cools</li><span class="arrow">&rarr;</span>
+      <li>Need fire</li><span class="arrow">&rarr;</span>
+      <li class="live">Torch is exposed</li><span class="arrow">&rarr;</span>
+      <li class="live">Torch goes out</li><span class="arrow">&rarr;</span>
+      <li>Need shelter</li><span class="arrow">&rarr;</span>
+      <li>Build a protected fire</li><span class="arrow">&rarr;</span>
+      <li>Dry off, warm up</li>
+    </ul>
+    <p class="chain-note">
+      Highlighted links are implemented today. The rest are designed and scheduled, not written.
+    </p>
+  </div>
+</section>
+
+<section id="now">
+  <div class="wrap">
+    <div class="kicker">What exists today</div>
+    <h2>The first slice, end to end.</h2>
+    <p>
+      Milestones 1 and 2 of the brief: the technical foundation, and one complete
+      gameplay slice. Nothing from milestone 3 onward is written yet, deliberately.
+      The brief asks for the first slice to work fully before any of it is started.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="tag">Shipping</span>
+        <h3>Rain douses torches</h3>
+        <p>
+          A torch under open sky, in a biome where rain actually falls, has a chance each
+          sweep of going dark. It stops emitting light, the lighting engine reacts, and
+          nearby players hear it hiss.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag">Shipping</span>
+        <h3>Torches are crafted unlit</h3>
+        <p>
+          Coal and a stick no longer buy light outright. Place the torch and use flint and
+          steel on it, or hold the stack against any open flame to light all of it at once.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag">Shipping</span>
+        <h3>Relighting is a choice</h3>
+        <p>
+          By default a doused torch stays dark until a player relights it. Only a torch the
+          weather put out can be relit by the weather. One doused on purpose stays dark.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag">Shipping</span>
+        <h3>A launcher of its own</h3>
+        <p>
+          A desktop launcher installs Minecraft, Fabric, the mod and its dependencies, keeps
+          them current, signs the player in through Microsoft, and starts the game. No manual
+          Fabric install, no dragging jars into a folder.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag wip">Designed</span>
+        <h3>Temperature and hydration</h3>
+        <p>
+          Biome and weather driving body temperature, heat driving water consumption. Modelled
+          in the brief, scheduled for milestones 3 and 4.
+        </p>
+      </div>
+      <div class="card">
+        <span class="tag wip">Designed</span>
+        <h3>Wetness and carry limits</h3>
+        <p>
+          Getting wet, drying out, fire as warmth, and a backpack system that changes how
+          much a player can take with them. Milestones 5 and 6.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="kicker">How it works</div>
+    <h2>Cheap enough to leave running.</h2>
+    <p>
+      A weather mechanic that scans the world is a mechanic a server operator turns off.
+      Positions enter an index when a chunk loads or a torch is placed, and leave when the
+      chunk unloads or a sweep finds nothing there.
+    </p>
+
+<pre><code>chunk loads ──► ChunkFireIndexer ──► FireIndex ◄── SurvivalTorchBlock.onPlace
+                                        │
+              every N ticks             ▼
+        WorldFireService.tick ──► FireSweep ──► FireDousingSystem
+                                        │              (decides)
+                                        ├── MinecraftFireProbe   (reads world)
+                                        └── MinecraftFireMutator (writes world)</code></pre>
+
+    <div class="cards">
+      <div class="card">
+        <h3>The world is never scanned</h3>
+        <p>
+          Chunk indexing walks only the chunk sections whose block palette mentions a torch, so
+          a chunk without one is rejected almost for free. Sweeps take a bounded slice and resume
+          where the last one stopped. Clear skies with nothing drying means no sweep at all.
+        </p>
+      </div>
+      <div class="card">
+        <h3>One block, one property</h3>
+        <p>
+          A torch is a single block with a <code>lit</code> property, not two blocks swapped for
+          each other. Light emission is a function of that property, so Minecraft re-lights the
+          area and tells clients on its own. The mod never touches the lighting engine.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Vanilla torches are redirected</h3>
+        <p>
+          A mixin swaps the vanilla torch state at placement time, which covers every route a
+          player has to placing a torch without replacing the vanilla block itself.
+        </p>
+      </div>
+    </div>
+
+    <h2 style="margin-top:3.5rem">Minecraft is the adapter, not the rules.</h2>
+    <p>
+      The dependency direction is strictly downward. <code>domain</code> imports no Minecraft
+      class anywhere, which is what makes the rules testable in about a second without a game
+      instance, and what would make a NeoForge port a rewrite of one layer rather than of the mod.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Package</th><th>Role</th><th>May depend on</th></tr></thead>
+        <tbody>
+          <tr><td class="k">domain</td><td><small>Survival rules and state. Plain Java.</small></td><td class="v">nothing</td></tr>
+          <tr><td class="k">integration</td><td><small>Blocks, adapters, mixins, config IO.</small></td><td class="v">domain</td></tr>
+          <tr><td class="k">server</td><td><small>Lifecycle, scheduling, per-world services.</small></td><td class="v">domain, integration</td></tr>
+          <tr><td class="k">network</td><td><small>Packet definitions and registration.</small></td><td class="v">domain</td></tr>
+          <tr><td class="k">client</td><td><small>HUD, tooltips, rendering.</small></td><td class="v">everything above</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1.1rem; font-size:.87rem; color:var(--text-faint)">
+      The client source set is compiled separately and stripped from a dedicated server, so a
+      client-only reference in common code fails at build time instead of crashing a server at runtime.
+    </p>
+  </div>
+</section>
+
+<section id="config">
+  <div class="wrap">
+    <div class="kicker">Configuration</div>
+    <h2>Every number is yours to move.</h2>
+    <p>
+      Written to <code>config/untamed.json</code> on first run. A malformed file is never fatal
+      and never overwritten: defaults are used for that session, so a typo cannot stop a server
+      from booting or destroy a hand-tuned file. Out-of-range values are clamped rather than trusted.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Key</th><th>Default</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td class="k">torches.enabled</td><td class="v">true</td><td><small>Master switch for the mechanic</small></td></tr>
+          <tr><td class="k">torches.extinguishChance</td><td class="v">0.35</td><td><small>Chance per sweep that a rained-on torch goes out</small></td></tr>
+          <tr><td class="k">torches.thunderstormMultiplier</td><td class="v">2.0</td><td><small>Applied to that chance during a thunderstorm</small></td></tr>
+          <tr><td class="k">torches.relightWhenDry</td><td class="v">false</td><td><small>Whether rain-doused torches relight themselves</small></td></tr>
+          <tr><td class="k">torches.checkIntervalTicks</td><td class="v">40</td><td><small>Ticks between sweeps, per world</small></td></tr>
+          <tr><td class="k">torches.maxChecksPerInterval</td><td class="v">512</td><td><small>Approximate positions inspected per sweep</small></td></tr>
+          <tr><td class="k">torches.convertVanillaPlacement</td><td class="v">true</td><td><small>Whether placing a vanilla torch yields the survival torch</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <div class="kicker">Roadmap</div>
+    <h2>Nine milestones, two of them behind us.</h2>
+    <p>
+      The order is deliberate. Each milestone has to work end to end before the next one starts,
+      because the value of these systems is in how they meet, and systems that do not work
+      individually cannot meet well.
+    </p>
+
+    <ul class="road">
+      <li class="done"><span class="m">M1 &middot; DONE</span><span class="t">Technical foundation</span>
+        <span class="d">Fabric project on Minecraft 26.2 and Java 25, client and server launch, logging, tests, mod metadata.</span></li>
+      <li class="done"><span class="m">M2 &middot; DONE</span><span class="t">Rain and torches</span>
+        <span class="d">Custom torch state, rain detection, sky exposure, lighting updates, placement handling, performance-safe tracking.</span></li>
+      <li><span class="m">M3</span><span class="t">Temperature prototype</span>
+        <span class="d">Player survival state, a temperature value, biome and weather influence, the update loop and its first effects.</span></li>
+      <li><span class="m">M4</span><span class="t">Hydration</span>
+        <span class="d">Hydration state, drinking, water sources, dehydration stages.</span></li>
+      <li><span class="m">M5</span><span class="t">Environmental simulation</span>
+        <span class="d">Wetness and drying, fire as warmth, and the first real interaction between temperature and hydration.</span></li>
+      <li><span class="m">M6</span><span class="t">Inventory and backpacks</span>
+        <span class="d">Limited vanilla inventory, backpack items and storage, persistence, custom UI, networking.</span></li>
+      <li><span class="m">M7</span><span class="t">Client experience</span>
+        <span class="d">The survival HUD, temperature and hydration visualisation, shaders, environmental effects.</span></li>
+      <li><span class="m">M8</span><span class="t">Advanced survival</span>
+        <span class="d">Insulation, clothing, stamina, fatigue, sleep, food spoilage, water purification. Only once the core is stable.</span></li>
+      <li><span class="m">M9</span><span class="t">Balancing and compatibility</span>
+        <span class="d">Polish, tuning, and playing well with the rest of the ecosystem.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section id="build">
+  <div class="wrap">
+    <div class="kicker">Build it</div>
+    <h2>Clone, build, play.</h2>
+    <p>
+      The Gradle wrapper is committed, so no Gradle install is needed. Compilation targets Java 25
+      through a toolchain, which Gradle resolves from any JDK 25 on the machine. Gradle itself can
+      run on an older JDK.
+    </p>
+
+<pre style="margin-top:2rem"><code>./gradlew build           <span style="color:#4d5a69"># build the mod jar</span>
+./gradlew runClient       <span style="color:#4d5a69"># launch a dev client</span>
+./gradlew runServer       <span style="color:#4d5a69"># launch a dedicated server</span>
+./gradlew test            <span style="color:#4d5a69"># domain tests, no Minecraft needed</span>
+./gradlew -p launcher run <span style="color:#4d5a69"># the desktop launcher</span></code></pre>
+
+    <div class="cards">
+      <div class="card">
+        <h3>No remap step</h3>
+        <p>
+          Minecraft 26.x runs under official mappings directly, so <code>build/libs/untamed-0.1.0.jar</code>
+          is the shippable artifact. There is no Yarn dependency, because Yarn is not published for the 26.x line.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Version coordinates in one place</h3>
+        <p>
+          Every Minecraft, Loader, Fabric API and Loom version is declared in <code>gradle.properties</code>
+          and nowhere else.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Update surfaces are marked</h3>
+        <p>
+          The places where Minecraft's own API has changed shape recently carry a
+          <code>Version-sensitive</code> comment, and all of them sit in the integration and client
+          layers. If a build fails after an update, start there.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div><span class="mono" style="color:var(--flame)">Untamed</span> &middot; built on Fabric</div>
+    <div class="disclaimer">
+      Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
