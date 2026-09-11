@@ -1,0 +1,86 @@
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+// Split source sets keep client-only code physically separate from common and
+// server code. Anything in src/client is stripped on a dedicated server, so a
+// stray client reference there fails at build time instead of at runtime.
+loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        "survivaloverhaul" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+}
+
+// The client source set has no resources of its own yet, so Gradle treats
+// processClientResources as NO-SOURCE and never creates its output directory.
+// The IDE's Java project still lists that directory on the classpath and
+// reports "references non existing library" for it, so create it up front.
+sourceSets.client.output.resourcesDir.mkdirs()
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // No mappings dependency: Loom defaults to Minecraft's official mappings,
+    // and Yarn is not published for this Minecraft line.
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "loader_version", project.loader_version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+                "minecraft_version": project.minecraft_version,
+                "loader_version": project.loader_version
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(project.java_version as int)
+    }
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = project.java_version as int
+    it.options.encoding = 'UTF-8'
+}
+
+// The domain layer has no Minecraft dependency, so its tests run as plain JUnit
+// without a game harness. See README "Testing".
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+    }
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.base.archivesName.get()}" }
+    }
+}

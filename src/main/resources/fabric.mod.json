@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "survivaloverhaul",
+  "version": "${version}",
+  "name": "Survival Overhaul",
+  "description": "A systemic survival overhaul. Weather, fire, temperature and equipment influence one another instead of sitting in separate bars.",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.survivaloverhaul.SurvivalOverhaul"
+    ],
+    "client": [
+      "dev.survivaloverhaul.client.SurvivalOverhaulClient"
+    ]
+  },
+  "mixins": [
+    "survivaloverhaul.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
